@@ -26,7 +26,7 @@ bool DesktopEntryWriter::write(const QString& name, const QString& engineRootPat
     out << "Type=Application\n";
     out << "Name=" << name << "\n";
     out << "Exec=" << engineRootPath << "/Engine/Binaries/Linux/UnrealEditor\n";
-    out << "Icon=" << QDir::homePath() << "/.local/share/icons/UE.png\n";
+    out << "Icon=" << engineRootPath << "/Engine/Content/Slate/Testing/PerfCapture.png\n";
     out << "Terminal=false\n";
     out << "Categories=Development;\n";
 
@@ -34,4 +34,16 @@ bool DesktopEntryWriter::write(const QString& name, const QString& engineRootPat
     file.setPermissions(QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther); // 0644
 
     return true;
+}
+
+void DesktopEntryWriter::remove(const QString& name) {
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QDir dir(desktopPath);
+    QString fileName = QString("unreal-%1.desktop").arg(name.toLower().replace(" ", "-"));
+    QString filePath = dir.absoluteFilePath(fileName);
+    
+    QFile file(filePath);
+    if (file.exists()) {
+        file.remove();
+    }
 }

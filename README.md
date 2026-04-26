@@ -63,7 +63,8 @@ cd UELinker
 
 # Copy icon
 mkdir -p ~/.local/share/icons
-cp UE.png ~/.local/share/icons/UE.png
+# The repository ships icons under the assets/ directory; copy from there
+cp assets/UE.png ~/.local/share/icons/UE.png
 
 # Build
 cmake -B build -DCMAKE_BUILD_TYPE=Release
@@ -100,8 +101,8 @@ sudo dnf install -y qt6-qtbase-devel cmake make gcc-c++
 git clone https://github.com/yourusername/UELinker.git
 cd UELinker
 
-mkdir -p ~/.local/share/icons
-cp UE.png ~/.local/share/icons/UE.png
+    mkdir -p ~/.local/share/icons
+    cp assets/UE.png ~/.local/share/icons/UE.png
 
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
@@ -133,8 +134,8 @@ sudo zypper install -y cmake make gcc-c++ libqt6-qtbase-devel
 git clone https://github.com/yourusername/UELinker.git
 cd UELinker
 
-mkdir -p ~/.local/share/icons
-cp UE.png ~/.local/share/icons/UE.png
+    mkdir -p ~/.local/share/icons
+    cp assets/UE.png ~/.local/share/icons/UE.png
 
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)

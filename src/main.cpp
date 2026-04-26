@@ -7,15 +7,18 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     qApp->setStyleSheet(R"(
-        QWidget        { background: #1e1e1e; color: #d4d4d4; }
+        QWidget        { background: #1e1e1e; color: #ffffff; }
         QPushButton    { background: #2d2d2d; border: 1px solid #444;
-                         border-radius: 6px; padding: 8px 18px; }
+                         border-radius: 6px; padding: 8px 18px; color: #ffffff; }
         QPushButton:hover   { background: #3a3a3a; }
         QPushButton:pressed { background: #252525; }
         QLineEdit      { background: #2d2d2d; border: 1px solid #444;
-                         border-radius: 4px; padding: 4px 8px; }
-        QLabel         { color: #aaaaaa; }
-        QDialog        { background: #1e1e1e; }
+                         border-radius: 4px; padding: 4px 8px; color: #ffffff; }
+        QLabel         { color: #ffffff; }
+        QDialog        { background: #1e1e1e; color: #ffffff; }
+        QMenu          { background: #2d2d2d; color: #ffffff; border: 1px solid #444; }
+        QMenu::item:selected { background: #3a3a3a; }
+        QScrollArea    { border: none; }
     )");
 
     MainWindow w;

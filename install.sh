@@ -33,8 +33,8 @@ echo -e "${GREEN}    ✓ Dependencies are ready.${NC}"
 # ── Step 2: Icon ──────────────────────────────────────────────
 echo -e "\n${YELLOW}[2/4] Copying UE icon to system...${NC}"
 mkdir -p ~/.local/share/icons
-if [ -f "UE.png" ]; then
-    cp UE.png ~/.local/share/icons/UE.png
+if [ -f "assets/UE.png" ]; then
+    cp assets/UE.png ~/.local/share/icons/UE.png
     echo -e "${GREEN}    ✓ UE.png copied to ~/.local/share/icons/${NC}"
 else
     echo -e "${RED}[!] UE.png not found in current directory. Continuing without icon.${NC}"

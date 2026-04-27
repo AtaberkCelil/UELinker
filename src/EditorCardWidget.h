@@ -2,6 +2,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
+#include <QToolButton>
 #include "EditorEntry.h"
 
 class EditorCardWidget : public QWidget {
@@ -18,5 +19,5 @@ private slots:
 private:
     EditorEntry m_entry;
     QLabel* m_nameLabel;
-    QPushButton* m_deleteButton;
+    QToolButton* m_deleteButton;
 };

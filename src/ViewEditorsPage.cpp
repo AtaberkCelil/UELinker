@@ -84,7 +84,9 @@ void ViewEditorsPage::loadEditors() {
     int col = 0;
 
     for (const auto& entry : entries) {
-        EditorCardWidget* card = new EditorCardWidget(entry, this);
+        // Ensure card widgets are parented to the scroll area's widget (the grid's parent)
+        QWidget* gridParent = m_gridLayout->parentWidget();
+        EditorCardWidget* card = new EditorCardWidget(entry, gridParent);
         connect(card, &EditorCardWidget::deletionRequested, this, &ViewEditorsPage::loadEditors);
         
         m_gridLayout->addWidget(card, row, col);

@@ -71,14 +71,33 @@ EditorCardWidget::EditorCardWidget(const EditorEntry& entry, QWidget* parent)
 
     // Favorite button
     m_favoriteButton = new QToolButton(content);
-    const QStringList emptyCandidates = { appDir + "/assets/empty.png", QString("assets/empty.png") };
-    const QStringList fullCandidates = { appDir + "/assets/full.png", QString("assets/full.png") };
-    for (const QString &p : emptyCandidates) { if (m_emptyPix.load(p)) break; }
-    for (const QString &p : fullCandidates) { if (m_fullPix.load(p)) break; }
-    
     m_favoriteButton->setFixedSize(40, 40);
     m_favoriteButton->setCursor(Qt::PointingHandCursor);
     m_favoriteButton->setStyleSheet("border: none; background: transparent;");
+    
+    // Load icons with multiple candidate paths
+    auto loadIcon = [&](const QString& filename, QPixmap& pix) {
+        const QStringList candidates = {
+            appDir + "/assets/" + filename,
+            appDir + "/../assets/" + filename,
+            QString("./assets/") + filename,
+            QString("assets/") + filename,
+            QString("build/assets/") + filename
+        };
+        for (const QString &p : candidates) {
+            if (pix.load(p)) return true;
+        }
+        return false;
+    };
+
+    bool emptyLoaded = loadIcon("empty.png", m_emptyPix);
+    bool fullLoaded = loadIcon("full.png", m_fullPix);
+
+#ifdef QT_DEBUG
+    if (!emptyLoaded) qDebug("EditorCardWidget: failed to load empty.png");
+    if (!fullLoaded) qDebug("EditorCardWidget: failed to load full.png");
+#endif
+
     m_favoriteButton->installEventFilter(this);
     connect(m_favoriteButton, &QToolButton::clicked, this, &EditorCardWidget::toggleFavorite);
     updateFavoriteIcon(false);
@@ -144,15 +163,32 @@ void EditorCardWidget::toggleFavorite() {
 
 void EditorCardWidget::updateFavoriteIcon(bool hovered) {
     if (m_entry.isFavorite) {
-        m_favoriteButton->setIcon(QIcon(m_fullPix));
+        if (!m_fullPix.isNull()) {
+            m_favoriteButton->setIcon(QIcon(m_fullPix));
+            m_favoriteButton->setIconSize(QSize(20, 20));
+        } else {
+            m_favoriteButton->setText("★");
+            m_favoriteButton->setStyleSheet("color: gold; font-size: 20px; border: none; background: transparent;");
+        }
     } else {
         if (hovered) {
-            m_favoriteButton->setIcon(QIcon(m_fullPix));
+            if (!m_fullPix.isNull()) {
+                m_favoriteButton->setIcon(QIcon(m_fullPix));
+                m_favoriteButton->setIconSize(QSize(20, 20));
+            } else {
+                m_favoriteButton->setText("★");
+                m_favoriteButton->setStyleSheet("color: gold; font-size: 20px; border: none; background: transparent;");
+            }
         } else {
-            m_favoriteButton->setIcon(QIcon(m_emptyPix));
+            if (!m_emptyPix.isNull()) {
+                m_favoriteButton->setIcon(QIcon(m_emptyPix));
+                m_favoriteButton->setIconSize(QSize(20, 20));
+            } else {
+                m_favoriteButton->setText("☆");
+                m_favoriteButton->setStyleSheet("color: white; font-size: 20px; border: none; background: transparent;");
+            }
         }
     }
-    m_favoriteButton->setIconSize(QSize(20, 20));
 }
 
 bool EditorCardWidget::eventFilter(QObject* watched, QEvent* event) {

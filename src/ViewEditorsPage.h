@@ -8,7 +8,6 @@ class ViewEditorsPage : public QWidget {
 public:
     explicit ViewEditorsPage(QWidget* parent = nullptr);
     void loadEditors();
-    void setColumnCount(int count);
 
 signals:
     void backRequested();

@@ -15,7 +15,6 @@ private slots:
   void openAddEditorDialog();
   void showViewEditorsPage();
   void showMainPage();
-  void toggleLayout();
 
 private:
   QStackedWidget *stackedWidget;
@@ -23,6 +22,4 @@ private:
   QPushButton *addEditorButton;
   QPushButton *viewEditorsButton;
   ViewEditorsPage *viewEditorsPage;
-  QPushButton *layoutToggleButton;
-  bool m_isVertical = true;
 };

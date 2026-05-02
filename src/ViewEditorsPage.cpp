@@ -55,8 +55,10 @@ ViewEditorsPage::ViewEditorsPage(QWidget* parent) : QWidget(parent) {
     m_gridLayout->setContentsMargins(16, 16, 16, 16);
     m_gridLayout->setSpacing(16);
     
-    // Column stretch will be set in setColumnCount
-    setColumnCount(5);
+    // Set 5 columns stretch
+    for (int i = 0; i < 5; ++i) {
+        m_gridLayout->setColumnStretch(i, 1);
+    }
 
     scrollWidget->setLayout(m_gridLayout);
     scrollArea->setWidget(scrollWidget);
@@ -100,7 +102,7 @@ void ViewEditorsPage::loadEditors() {
         
         m_gridLayout->addWidget(card, row, col);
         col++;
-        if (col >= m_columnCount) {
+        if (col >= 5) {
             col = 0;
             row++;
         }
@@ -108,22 +110,5 @@ void ViewEditorsPage::loadEditors() {
     
     // We add a stretchable spacer at the end to push cards to the top
     QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    m_gridLayout->addItem(spacer, row + 1, 0, 1, m_columnCount);
-}
-
-void ViewEditorsPage::setColumnCount(int count) {
-    if (count <= 0) return;
-    m_columnCount = count;
-    
-    // Reset stretches
-    for (int i = 0; i < m_gridLayout->columnCount(); ++i) {
-        m_gridLayout->setColumnStretch(i, 0);
-    }
-    for (int i = 0; i < m_columnCount; ++i) {
-        m_gridLayout->setColumnStretch(i, 1);
-    }
-    
-    if (!m_gridLayout->isEmpty()) {
-        loadEditors(); // Reload to rearrange
-    }
+    m_gridLayout->addItem(spacer, row + 1, 0, 1, 5);
 }

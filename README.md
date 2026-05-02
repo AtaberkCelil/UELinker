@@ -2,6 +2,9 @@
 
 **UELinker** is a lightweight Linux desktop application that lets you register multiple Unreal Engine installations as `.desktop` entries — without the Epic Games Launcher. Simply point it to your engine root folder, give it a name, and UELinker will create a proper application shortcut in `~/.local/share/applications/`, making the editor searchable from GNOME Activities, KDE Kickoff, Rofi, or any other app launcher.
 
+![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)
+![C++](https://img.shields.io/badge/language-C%2B%2B17-blue)
+
 ---
 
 ## Features
@@ -236,4 +239,4 @@ UELinker/
 
 ## License
 
-This project is free and open for contributions.
+[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://opensource.org/licenses/GPL-2.0)

@@ -17,14 +17,18 @@ echo -e "${BLUE}=======================================${NC}"
 
 # ── Step 1: Dependencies ──────────────────────────────────────
 echo -e "\n${YELLOW}[1/4] Checking and installing required dependencies...${NC}"
-if command -v yay &> /dev/null; then
+if command -v apt-get &> /dev/null; then
+    echo -e "      Package manager: ${GREEN}apt${NC} (Debian/Kali/Ubuntu)"
+    sudo apt-get update
+    sudo apt-get install -y qt6-base-dev cmake make g++
+elif command -v yay &> /dev/null; then
     echo -e "      Package manager: ${GREEN}yay${NC} (AUR)"
     yay -S --needed --noconfirm qt6-base cmake make gcc
 elif command -v pacman &> /dev/null; then
     echo -e "      Package manager: ${GREEN}pacman${NC}"
     sudo pacman -S --needed --noconfirm qt6-base cmake make gcc
 else
-    echo -e "${RED}[!] Neither yay nor pacman found.${NC}"
+    echo -e "${RED}[!] No supported package manager found.${NC}"
     echo -e "    Please install the following packages manually: qt6-base cmake make gcc"
     exit 1
 fi
@@ -42,7 +46,7 @@ fi
 
 # ── Step 3: Build ─────────────────────────────────────────────
 echo -e "\n${YELLOW}[3/4] Building UELinker with CMake...${NC}"
-cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PROJECT_NAME=UELinker
+cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
 echo -e "${GREEN}    ✓ Build successful.${NC}"
 

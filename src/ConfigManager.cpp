@@ -60,6 +60,7 @@ namespace {
             QJsonObject obj;
             obj["name"] = entry.name;
             obj["path"] = entry.path;
+            obj["isFavorite"] = entry.isFavorite;
             array.append(obj);
         }
         QJsonDocument doc(array);
@@ -89,7 +90,11 @@ QList<EditorEntry> ConfigManager::loadEntries() {
         QJsonArray array = doc.array();
         for (int i = 0; i < array.size(); ++i) {
             QJsonObject obj = array[i].toObject();
-            entries.append({obj["name"].toString(), obj["path"].toString()});
+            EditorEntry entry;
+            entry.name = obj["name"].toString();
+            entry.path = obj["path"].toString();
+            entry.isFavorite = obj["isFavorite"].toBool(false);
+            entries.append(entry);
         }
     }
     return entries;

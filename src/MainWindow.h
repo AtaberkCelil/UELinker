@@ -1,24 +1,28 @@
 #pragma once
+#include "ViewEditorsPage.h"
 #include <QMainWindow>
 #include <QPushButton>
 #include <QStackedWidget>
-#include "ViewEditorsPage.h"
+
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+  MainWindow(QWidget *parent = nullptr);
 
 private slots:
-    void openAddEditorDialog();
-    void showViewEditorsPage();
-    void showMainPage();
+  void openAddEditorDialog();
+  void showViewEditorsPage();
+  void showMainPage();
+  void toggleLayout();
 
 private:
-    QStackedWidget *stackedWidget;
-    QWidget *mainPage;
-    QPushButton *addEditorButton;
-    QPushButton *viewEditorsButton;
-    ViewEditorsPage *viewEditorsPage;
+  QStackedWidget *stackedWidget;
+  QWidget *mainPage;
+  QPushButton *addEditorButton;
+  QPushButton *viewEditorsButton;
+  ViewEditorsPage *viewEditorsPage;
+  QPushButton *layoutToggleButton;
+  bool m_isVertical = true;
 };

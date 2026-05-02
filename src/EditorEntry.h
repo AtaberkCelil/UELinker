@@ -4,4 +4,5 @@
 struct EditorEntry {
     QString name;
     QString path;
+    bool isFavorite = false;
 };

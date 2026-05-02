@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 #include <QPixmap>
 #include <QIcon>
+#include <algorithm>
 
 ViewEditorsPage::ViewEditorsPage(QWidget* parent) : QWidget(parent) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -54,10 +55,8 @@ ViewEditorsPage::ViewEditorsPage(QWidget* parent) : QWidget(parent) {
     m_gridLayout->setContentsMargins(16, 16, 16, 16);
     m_gridLayout->setSpacing(16);
     
-    // Set 5 columns stretch
-    for (int i = 0; i < 5; ++i) {
-        m_gridLayout->setColumnStretch(i, 1);
-    }
+    // Column stretch will be set in setColumnCount
+    setColumnCount(5);
 
     scrollWidget->setLayout(m_gridLayout);
     scrollArea->setWidget(scrollWidget);
@@ -80,6 +79,15 @@ void ViewEditorsPage::loadEditors() {
     clearLayout(m_gridLayout);
 
     QList<EditorEntry> entries = ConfigManager::loadEntries();
+    
+    // Sort favorites to the top
+    std::sort(entries.begin(), entries.end(), [](const EditorEntry& a, const EditorEntry& b) {
+        if (a.isFavorite != b.isFavorite) {
+            return a.isFavorite > b.isFavorite;
+        }
+        return a.name < b.name;
+    });
+
     int row = 0;
     int col = 0;
 
@@ -88,10 +96,11 @@ void ViewEditorsPage::loadEditors() {
         QWidget* gridParent = m_gridLayout->parentWidget();
         EditorCardWidget* card = new EditorCardWidget(entry, gridParent);
         connect(card, &EditorCardWidget::deletionRequested, this, &ViewEditorsPage::loadEditors);
+        connect(card, &EditorCardWidget::favoriteChanged, this, &ViewEditorsPage::loadEditors);
         
         m_gridLayout->addWidget(card, row, col);
         col++;
-        if (col >= 5) {
+        if (col >= m_columnCount) {
             col = 0;
             row++;
         }
@@ -99,5 +108,22 @@ void ViewEditorsPage::loadEditors() {
     
     // We add a stretchable spacer at the end to push cards to the top
     QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    m_gridLayout->addItem(spacer, row + 1, 0, 1, 5);
+    m_gridLayout->addItem(spacer, row + 1, 0, 1, m_columnCount);
+}
+
+void ViewEditorsPage::setColumnCount(int count) {
+    if (count <= 0) return;
+    m_columnCount = count;
+    
+    // Reset stretches
+    for (int i = 0; i < m_gridLayout->columnCount(); ++i) {
+        m_gridLayout->setColumnStretch(i, 0);
+    }
+    for (int i = 0; i < m_columnCount; ++i) {
+        m_gridLayout->setColumnStretch(i, 1);
+    }
+    
+    if (!m_gridLayout->isEmpty()) {
+        loadEditors(); // Reload to rearrange
+    }
 }

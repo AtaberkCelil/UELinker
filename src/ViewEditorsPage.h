@@ -8,11 +8,13 @@ class ViewEditorsPage : public QWidget {
 public:
     explicit ViewEditorsPage(QWidget* parent = nullptr);
     void loadEditors();
+    void setColumnCount(int count);
 
 signals:
     void backRequested();
 
 private:
     QGridLayout* m_gridLayout;
+    int m_columnCount = 5;
     void clearLayout(QLayout* layout);
 };

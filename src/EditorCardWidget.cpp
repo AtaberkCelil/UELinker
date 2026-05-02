@@ -9,6 +9,7 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QPainter>
+#include <QEvent>
 
 EditorCardWidget::EditorCardWidget(const EditorEntry& entry, QWidget* parent)
     : QWidget(parent), m_entry(entry) {
@@ -67,6 +68,22 @@ EditorCardWidget::EditorCardWidget(const EditorEntry& entry, QWidget* parent)
     m_deleteButton->setStyleSheet("border: none; background: transparent; color: #ffffff;");
 
     contentLayout->addWidget(m_nameLabel, 1);
+
+    // Favorite button
+    m_favoriteButton = new QToolButton(content);
+    const QStringList emptyCandidates = { appDir + "/assets/empty.png", QString("assets/empty.png") };
+    const QStringList fullCandidates = { appDir + "/assets/full.png", QString("assets/full.png") };
+    for (const QString &p : emptyCandidates) { if (m_emptyPix.load(p)) break; }
+    for (const QString &p : fullCandidates) { if (m_fullPix.load(p)) break; }
+    
+    m_favoriteButton->setFixedSize(40, 40);
+    m_favoriteButton->setCursor(Qt::PointingHandCursor);
+    m_favoriteButton->setStyleSheet("border: none; background: transparent;");
+    m_favoriteButton->installEventFilter(this);
+    connect(m_favoriteButton, &QToolButton::clicked, this, &EditorCardWidget::toggleFavorite);
+    updateFavoriteIcon(false);
+
+    contentLayout->addWidget(m_favoriteButton, 0, Qt::AlignVCenter);
     contentLayout->addWidget(m_deleteButton, 0, Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(content);
 
@@ -116,4 +133,35 @@ void EditorCardWidget::showDeleteMenu() {
             emit deletionRequested();
         }
     }
+}
+
+void EditorCardWidget::toggleFavorite() {
+    m_entry.isFavorite = !m_entry.isFavorite;
+    ConfigManager::saveEntry(m_entry);
+    updateFavoriteIcon(true); // Keep full icon if clicked
+    emit favoriteChanged();
+}
+
+void EditorCardWidget::updateFavoriteIcon(bool hovered) {
+    if (m_entry.isFavorite) {
+        m_favoriteButton->setIcon(QIcon(m_fullPix));
+    } else {
+        if (hovered) {
+            m_favoriteButton->setIcon(QIcon(m_fullPix));
+        } else {
+            m_favoriteButton->setIcon(QIcon(m_emptyPix));
+        }
+    }
+    m_favoriteButton->setIconSize(QSize(20, 20));
+}
+
+bool EditorCardWidget::eventFilter(QObject* watched, QEvent* event) {
+    if (watched == m_favoriteButton) {
+        if (event->type() == QEvent::Enter) {
+            updateFavoriteIcon(true);
+        } else if (event->type() == QEvent::Leave) {
+            updateFavoriteIcon(false);
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }

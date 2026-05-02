@@ -23,9 +23,11 @@ namespace {
         QDir dir(desktopPath);
         if (!dir.exists()) return entries;
 
+        // Look for .desktop files that begin with "unreal-". Use name filters
+        // and also accept any .desktop files in case the naming differs.
         QStringList filters;
-        filters << "unreal-*.desktop";
-        QFileInfoList files = dir.entryInfoList(filters, QDir::Files);
+        filters << "unreal-*.desktop" << "*.desktop";
+        QFileInfoList files = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
 
         for (const QFileInfo& fileInfo : files) {
             QFile file(fileInfo.absoluteFilePath());
@@ -38,16 +40,40 @@ namespace {
                     if (line.startsWith("Name=")) {
                         name = line.mid(5).trimmed();
                     } else if (line.startsWith("Exec=")) {
+                        // Exec lines can contain arguments or be surrounded by quotes.
                         QString exec = line.mid(5).trimmed();
-                        if (exec.endsWith("/Engine/Binaries/Linux/UnrealEditor")) {
-                            path = exec.left(exec.length() - QString("/Engine/Binaries/Linux/UnrealEditor").length());
+                        // Remove trailing arguments: split at first space unless path is quoted
+                        if (exec.startsWith('"')) {
+                            // "..." possibly with args after
+                            int endQuote = exec.indexOf('"', 1);
+                            if (endQuote > 0) {
+                                path = exec.mid(1, endQuote - 1);
+                            } else {
+                                path = exec;
+                            }
                         } else {
-                            path = exec;
+                            int sp = exec.indexOf(' ');
+                            QString candidate = (sp > 0) ? exec.left(sp) : exec;
+                            // If Exec points to the UnrealEditor binary, strip the binary name
+                            const QString suffix = "/Engine/Binaries/Linux/UnrealEditor";
+                            if (candidate.endsWith(suffix)) {
+                                path = candidate.left(candidate.length() - suffix.length());
+                            } else {
+                                path = candidate;
+                            }
                         }
                     }
                 }
                 if (!name.isEmpty() && !path.isEmpty()) {
-                    entries.append({name, path});
+                    // Ensure the path is a directory and not the binary itself
+                    QDir maybeDir(path);
+                    if (!maybeDir.exists() && QFile::exists(path)) {
+                        // If path itself is a file, take its directory
+                        maybeDir = QDir(QFileInfo(path).absolutePath());
+                    }
+                    if (maybeDir.exists()) {
+                        entries.append({name, maybeDir.absolutePath()});
+                    }
                 }
             }
         }

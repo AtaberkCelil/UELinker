@@ -73,7 +73,7 @@ EditorCardWidget::EditorCardWidget(const EditorEntry& entry, QWidget* parent)
     m_favoriteButton = new QToolButton(content);
     m_favoriteButton->setFixedSize(40, 40);
     m_favoriteButton->setCursor(Qt::PointingHandCursor);
-    m_favoriteButton->setStyleSheet("border: none; background: transparent;");
+    m_favoriteButton->setStyleSheet("border: none; background: transparent; color: white; font-size: 20px;");
     
     // Load icons with multiple candidate paths
     auto loadIcon = [&](const QString& filename, QPixmap& pix) {
@@ -166,26 +166,29 @@ void EditorCardWidget::updateFavoriteIcon(bool hovered) {
         if (!m_fullPix.isNull()) {
             m_favoriteButton->setIcon(QIcon(m_fullPix));
             m_favoriteButton->setIconSize(QSize(20, 20));
+            m_favoriteButton->setText("");
         } else {
             m_favoriteButton->setText("★");
-            m_favoriteButton->setStyleSheet("color: gold; font-size: 20px; border: none; background: transparent;");
+            m_favoriteButton->setIcon(QIcon());
         }
     } else {
         if (hovered) {
             if (!m_fullPix.isNull()) {
                 m_favoriteButton->setIcon(QIcon(m_fullPix));
                 m_favoriteButton->setIconSize(QSize(20, 20));
+                m_favoriteButton->setText("");
             } else {
                 m_favoriteButton->setText("★");
-                m_favoriteButton->setStyleSheet("color: gold; font-size: 20px; border: none; background: transparent;");
+                m_favoriteButton->setIcon(QIcon());
             }
         } else {
             if (!m_emptyPix.isNull()) {
                 m_favoriteButton->setIcon(QIcon(m_emptyPix));
                 m_favoriteButton->setIconSize(QSize(20, 20));
+                m_favoriteButton->setText("");
             } else {
                 m_favoriteButton->setText("☆");
-                m_favoriteButton->setStyleSheet("color: white; font-size: 20px; border: none; background: transparent;");
+                m_favoriteButton->setIcon(QIcon());
             }
         }
     }
@@ -199,5 +202,5 @@ bool EditorCardWidget::eventFilter(QObject* watched, QEvent* event) {
             updateFavoriteIcon(false);
         }
     }
-    return QWidget::eventFilter(watched, event);
+    return false;
 }

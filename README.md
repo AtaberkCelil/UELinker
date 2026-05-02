@@ -20,12 +20,12 @@
 
 ## Prerequisites
 
-| Dependency | Version |
-|---|---|
-| Qt 6 (Widgets) | 6.x |
-| CMake | 3.20+ |
-| GCC / Clang | C++17 capable |
-| make | any recent version |
+| Dependency     | Version            |
+| -------------- | ------------------ |
+| Qt 6 (Widgets) | 6.x                |
+| CMake          | 3.20+              |
+| GCC / Clang    | C++17 capable      |
+| make           | any recent version |
 
 ---
 
@@ -36,13 +36,14 @@
 Use the provided `install.sh` script. It handles dependency installation, building, and system integration automatically:
 
 ```bash
-git clone https://github.com/yourusername/UELinker.git
+git clone https://github.com/AliGalipALATLI/UELinker.git
 cd UELinker
 chmod +x install.sh
 ./install.sh
 ```
 
 **What the script does, step by step:**
+
 1. Installs `qt6-base`, `cmake`, `make`, `gcc` via `yay` (AUR) or `pacman`.
 2. Copies `UE.png` to `~/.local/share/icons/` for use as the application icon.
 3. Configures and builds the project with CMake in Release mode.
@@ -61,7 +62,7 @@ Install dependencies using `apt`, then build manually:
 sudo apt update
 sudo apt install -y qt6-base-dev cmake make g++
 
-git clone https://github.com/yourusername/UELinker.git
+git clone https://github.com/AliGalipALATLI/UELinker.git
 cd UELinker
 
 # Copy icon
@@ -228,12 +229,12 @@ UELinker/
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Language | C++17 |
-| GUI Framework | Qt 6 (Widgets) |
-| Build System | CMake 3.20+ |
-| Target Platform | Linux x86_64 |
+| Layer           | Technology     |
+| --------------- | -------------- |
+| Language        | C++17          |
+| GUI Framework   | Qt 6 (Widgets) |
+| Build System    | CMake 3.20+    |
+| Target Platform | Linux x86_64   |
 
 ---
 

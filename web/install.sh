@@ -8,6 +8,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+Git = 0
 
 echo -e "${BLUE}=======================================${NC}"
 echo -e "${BLUE}       UELinker Installer v1.0         ${NC}"
@@ -25,13 +26,25 @@ if [ "$(basename "$PWD")" != "UELinker" ]; then
         # Restart the script from the new directory
         exec ./install.sh
     else
+
         echo -e "${RED}[!] git not found. Please clone the repository manually and try again.${NC}"
         exit 1
+        Git = 1
     fi
 fi
 
 # ── Step 1: Dependencies ──────────────────────────────────────
 echo -e "\n${YELLOW}[1/4] Checking and installing required dependencies...${NC}"
+if Git -eq 1; then
+    if command -v yay &> /dev/null; then
+        echo -e "    Installing git "
+        yay -S --needed --noconfirm git
+    fi
+    elif command -v pacman &> /dev/null; then
+        echo -e "    Installing git "
+        sudo pacman -S --needed --noconfirm git
+fi
+
 if command -v yay &> /dev/null; then
     echo -e "      Package manager: ${GREEN}yay${NC} (AUR)"
     yay -S --needed --noconfirm qt6-base cmake make gcc
